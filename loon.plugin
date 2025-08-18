@@ -3,6 +3,6 @@
 [host]
 gw.xiaocantech.com
 [mitm]
-gw.xiaocantech.com
+hostname = gw.xiaocantech.com
 [rewrite]
 ^https:\/\/gw\.xiaocantech\.com\/rpc response-body-replace-regex "mt_pwd":\".+\" "mt_pwd":""
