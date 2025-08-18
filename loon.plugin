@@ -1,7 +1,6 @@
 #!name = 自用
+#!desc = 哈哈
 
-[host]
-gw.xiaocantech.com
 [mitm]
 hostname = gw.xiaocantech.com
 [rewrite]
