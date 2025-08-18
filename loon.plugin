@@ -1,6 +1,7 @@
-#!name= 自用
+#!name = 自用
+#!tag = 用用
 
-[hostname]
+[host]
 gw.xiaocantech.com
 [rewrite]
 ^https:\/\/gw\.xiaocantech\.com\/rpc response-body-replace-regex "mt_pwd":\".+\" "mt_pwd":""
