@@ -1,3 +1,5 @@
+#!name=自用
+
 [hostname]
 gw.xiaocantech.com
 [rewrite]
