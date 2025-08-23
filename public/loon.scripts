@@ -2,10 +2,14 @@
 #!desc=哈哈哈哈
 #!icon=https://github.com/Toperlock/Quantumult/raw/main/icon/Doraemon/Doraemon-1096.png
 
+[Argument]
+美团领券 = switch,true
+
+
 [Script]
 http-response ^https:\/\/adapi\.waimai\.meituan\.com\/api\/ad\/landingPage script-path=https://loon-nine.vercel.app/loon.js, requires-body=true, timeout=60, tag=提取津贴
 
-#!homepage= http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/1美团.js, requires-body=true, timeout=60, tag=美团领券
+http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/1美团.js, requires-body=true, timeout=60, tag=美团领券, enable={美团领券}
 
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/翻页.js, requires-body=true, timeout=60, tag=领券翻页
 
