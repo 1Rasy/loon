@@ -38,5 +38,4 @@ if (req_url.includes("adapi.waimai.meituan.com/api/ad/landingPage")) {
         console.log('解析响应体失败', e);
     }
 }
-$
-done();
+$done({ body: rsp_body });  // 返回原始响应体，App 正常加载
