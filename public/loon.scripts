@@ -13,7 +13,7 @@ http-response ^https:\/\/adapi\.waimai\.meituan\.com\/api\/ad\/landingPage scrip
 
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/美团.js, requires-body=true, timeout=60, tag=美团领券, enable={美团领券}
 
-http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/翻页.js, requires-body=true, timeout=60, tag=领券翻页, enable={自动领券}
+http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/翻页.js, requires-body=true, timeout=60, tag=领券翻页, enable={自动翻页}
 
 [MITM]
 hostname = adapi.waimai.meituan.com
