@@ -9,14 +9,10 @@ if (typeof $response !== 'undefined' && $response !== null) {
 if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
     console.log('美团商家优惠券抓取开始');
 
-    // 推送通知（只提示一次，不包含具体内容）
-    if (typeof $notification !== 'undefined' && $notification.post) {
-        $notification.post('美团优惠券抓取✅', '', '');
-    }
-
     try {
         let dataObj = JSON.parse(rsp_body);
         let infos = dataObj.infos || [];
+        let notifyMsg = "";
 
         infos.forEach(item => {
             if (item.poiBaseInfo && item.giftInfo) {
@@ -25,11 +21,24 @@ if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
                 let coupon_amount = item.giftInfo.coupon_amount / 100;      // 除法换算
                 let order_amount_limit = item.giftInfo.order_amount_limit / 100;
 
-                // 按要求输出格式
-                console.log(`${name} ${order_amount_limit}-${coupon_amount}`);
-                console.log(gift_id);
+                let line1 = `${name} ${order_amount_limit}-${coupon_amount}`;
+                let line2 = gift_id;
+
+                // 控制台逐条打印
+                console.log(line1);
+                console.log(line2);
+
+                // 通知里拼接
+                notifyMsg += `${line1}\n${line2}\n\n`;
             }
         });
+
+        // 如果有内容，推送一次通知
+        if (notifyMsg.trim()) {
+            if (typeof $notification !== 'undefined' && $notification.post) {
+                $notification.post('美团优惠券抓取✅', '', notifyMsg.trim());
+            }
+        }
     } catch (e) {
         console.log('解析响应体失败', e);
     }
