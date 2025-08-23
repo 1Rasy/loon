@@ -1,6 +1,6 @@
 /**
  * @script-type http-request
- * @description 抓取并保存美团请求头中的 cookie 和 mtgsig
+ * @description 抓取并保存美团请求头中的 cookie 和 mtgsig（避免重复通知）
  */
 
 (() => {
@@ -19,20 +19,36 @@
         mtgsig
       };
 
-      // 写入本地存储
-      const success = $persistentStore.write(JSON.stringify(stored), "meituan_auth");
+      // 读取旧数据
+      const oldData = $persistentStore.read("mt_au");
+      let needNotify = false;
 
-      if (success) {
-        $notification.post("✅ 美团 Cookie 抓取成功", "", "已保存 cookie 和 mtgsig");
-        console.log("[Loon] 已保存美团认证信息: " + JSON.stringify(stored));
+      if (!oldData) {
+        // 没有旧数据 → 必须通知
+        needNotify = true;
       } else {
-        $notification.post("❌ 美团 Cookie 抓取失败", "", "写入本地存储失败");
+        try {
+          const old = JSON.parse(oldData);
+          if (old.cookie !== cookie || old.mtgsig !== mtgsig) {
+            // 新旧数据不一样 → 通知
+            needNotify = true;
+          }
+        } catch (_) {
+          needNotify = true; // 如果旧数据解析失败，也更新
+        }
+      }
+
+      // 写入新数据
+      const success = $persistentStore.write(JSON.stringify(stored), "mt_au");
+
+      if (success && needNotify) {
+        $notification.post("✅ 美团 Cookie 更新", "", "已保存新的 cookie 和 mtgsig");
+        console.log("[Loon] 已更新美团认证信息: " + JSON.stringify(stored));
       }
     }
   } catch (e) {
     console.log("[Loon] 脚本错误: " + e.message);
   } finally {
-    // 不修改请求，直接放行
     $done({});
   }
 })();
