@@ -5,6 +5,7 @@
 津贴提取 = switch,false,tag=津贴提取
 美团领券 = switch,false,tag=领券提取
 自动翻页 = switch,false,tag=自动翻页
+提取cookie = switch,false,tag=提取cookie
 
 
 [Script]
@@ -13,6 +14,8 @@ http-response ^https:\/\/adapi\.waimai\.meituan\.com\/api\/ad\/landingPage scrip
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/美团.js, requires-body=true, timeout=60, tag=美团领券, enable={美团领券}
 
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/翻页.js, requires-body=true, timeout=60, tag=领券翻页, enable={自动翻页}
+
+http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/mt_cookie.js, requires-body=true, timeout=60, tag=美团cookie, enable={提取cookie}
 
 [MITM]
 hostname = adapi.waimai.meituan.com, offsiteact.meituan.com, gw.xiaocantech.com
