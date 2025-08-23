@@ -15,5 +15,8 @@ http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz 
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/翻页.js, requires-body=true, timeout=60, tag=领券翻页, enable={自动翻页}
 
 [MITM]
-hostname = adapi.waimai.meituan.com
-hostname = offsiteact.meituan.com
+hostname = adapi.waimai.meituan.com,
+offsiteact.meituan.com,
+gw.xiaocantech.com
+[rewrite]
+^https:\/\/gw\.xiaocantech\.com\/rpc response-body-replace-regex "mt_pwd":\".+\" "mt_pwd":""
