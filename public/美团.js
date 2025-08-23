@@ -1,38 +1,42 @@
 const req_url = $request.url;
+const req_headers = $request.headers;
+const req_body = $request.body;
 let rsp_body = "{}";
 
+// 如果有响应体，赋值
 if (typeof $response !== 'undefined' && $response !== null) {
-    rsp_body = $response.body;
+  rsp_body = $response.body;
 }
 
-// 匹配目标 URL
 if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
-    console.log('美团商家优惠券抓取开始');
+  try {
+    let dataObj = JSON.parse(rsp_body || '{}');
+    let infos = dataObj.infos || [];
 
-    // 推送通知
-    if (typeof $notification !== 'undefined' && $notification.post) {
-        $notification.post('美团优惠券抓取✅', '', '');
-    }
+    infos.forEach(item => {
+      if (item.poiBaseInfo) {   // ✅ 只处理有 poiBaseInfo 的请求
+        let name = item.poiBaseInfo.name;
+        let gift = item.giftInfo;
 
-    try {
-        let dataObj = JSON.parse(rsp_body);
-        let infos = dataObj.infos || [];
+        if (gift && gift.gift_id) {
+          // 满减额度换算：1000-200 => 10-2
+          let full = gift.order_amount_limit / 100;
+          let minus = gift.coupon_amount / 100;
 
-        infos.forEach(item => {
-            let name = item.poiBaseInfo?.name;
-            let gift = item.giftInfo;
+          let logText = `${name} ${full}-${minus}\n${gift.gift_id}`;
+          console.log(logText);
 
-            if (name && gift) {
-                let gift_id = gift.gift_id;
-                let coupon_amount = gift.coupon_amount;
-                let order_amount_limit = gift.order_amount_limit;
-
-                console.log(`店铺名：${name}，券码：${gift_id}，满减：${order_amount_limit}-${coupon_amount}`);
-            }
-        });
-    } catch (e) {
-        console.log('解析响应体失败', e);
-    }
+          $notification(
+            "美团商家信息获取成功✅",
+            "",
+            logText
+          );
+        }
+      }
+    });
+  } catch (e) {
+    console.log('解析失败:', e);
+  }
 }
 
 // ✅ 返回原始响应体，保证 App 正常加载
