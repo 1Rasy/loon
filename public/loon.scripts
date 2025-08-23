@@ -3,7 +3,7 @@
 #!icon=https://github.com/Toperlock/Quantumult/raw/main/icon/Doraemon/Doraemon-1096.png
 
 [Argument]
-美团领券 = switch,true,desc=美团领券提取开关
+美团领券 = switch,true,tag=开关, desc=美团领券提取开关
 
 
 [Script]
