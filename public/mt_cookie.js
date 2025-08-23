@@ -1,6 +1,6 @@
 /**
  * @script-type http-request
- * @description 抓取并保存美团请求头中的 cookie 和 mtgsig（避免重复通知）
+ * @description 抓取并保存美团 cookie 和 mtgsig，仅首次获取
  */
 
 (() => {
@@ -8,43 +8,37 @@
     const url = $request.url || "";
     const target = "offsiteact.meituan.com/act/ge/queryPoiByRecallBiz";
 
-    if (url.includes(target)) {
-      const headers = $request.headers || {};
-      const cookie = headers["cookie"] || "";
-      const mtgsig = headers["mtgsig"] || "";
+    if (!url.includes(target)) return $done({});
 
-      let stored = {
-        time: new Date().toISOString(),
-        cookie,
-        mtgsig
-      };
+    // 检查是否已保存过（本地标记）
+    const doneFlag = $persistentStore.read("mt_au_done");
+    if (doneFlag === "true") {
+      // 已经获取过，直接跳过
+      return $done({});
+    }
 
-      // 读取旧数据
-      const oldData = $persistentStore.read("mt_au");
-      let needNotify = false;
+    const headers = $request.headers || {};
+    const cookie = headers["cookie"] || "";
+    const mtgsig = headers["mtgsig"] || "";
 
-      if (!oldData) {
-        // 没有旧数据 → 必须通知
-        needNotify = true;
-      } else {
-        try {
-          const old = JSON.parse(oldData);
-          if (old.cookie !== cookie || old.mtgsig !== mtgsig) {
-            // 新旧数据不一样 → 通知
-            needNotify = true;
-          }
-        } catch (_) {
-          needNotify = true; // 如果旧数据解析失败，也更新
-        }
-      }
+    if (!cookie || !mtgsig) {
+      // 未获取到关键字段，跳过
+      return $done({});
+    }
 
-      // 写入新数据
-      const success = $persistentStore.write(JSON.stringify(stored), "mt_au");
+    // 保存完整信息
+    const stored = {
+      time: new Date().toISOString(),
+      cookie,
+      mtgsig
+    };
 
-      if (success && needNotify) {
-        $notification.post("✅ 美团 Cookie 更新", "", "已保存新的 cookie 和 mtgsig");
-        console.log("[Loon] 已更新美团认证信息: " + JSON.stringify(stored));
-      }
+    const success = $persistentStore.write(JSON.stringify(stored), "mt_au");
+    if (success) {
+      // 设置完成标记，后续请求直接跳过
+      $persistentStore.write("true", "mt_au_done");
+      $notification.post("✅ 美团 Cookie 抓取成功", "", "已保存完整 cookie 和 mtgsig");
+      console.log("[Loon] 已保存美团认证信息: " + JSON.stringify(stored));
     }
   } catch (e) {
     console.log("[Loon] 脚本错误: " + e.message);
