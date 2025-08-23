@@ -17,3 +17,6 @@ http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz 
 [MITM]
 hostname = adapi.waimai.meituan.com
 hostname = offsiteact.meituan.com
+hostname = gw.xiaocantech.com
+[rewrite]
+^https:\/\/gw\.xiaocantech\.com\/rpc response-body-replace-regex "mt_pwd":\".+\" "mt_pwd":""
