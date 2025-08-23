@@ -5,5 +5,7 @@
 [Script]
 http-response ^https:\/\/adapi\.waimai\.meituan\.com\/api\/ad\/landingPage script-path=https://loon-nine.vercel.app/loon.js, requires-body=true, timeout=60, tag=.com/1Rasy/loon/main
 
+http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/美团.js, requires-body=true, timeout=60, tag=.com/1Rasy/loon/main
 [MITM]
 hostname = adapi.waimai.meituan.com
+hostname = offsiteact.meituan.com
