@@ -36,7 +36,7 @@
 
     // 检查当前手机号是否存在且更新时间是否 < 10 分钟
     const index = storedArr.findIndex(item => item.phone === phone);
-    if (index !== -1 && now - (new Date(storedArr[index].time).getTime() || 0) < 10 * 60 * 1000) {
+    if (index !== -1 && now - (new Date(storedArr[index].time).getTime() || 0) < 1 * 60 * 1000) {
       return $done({});
     }
 
