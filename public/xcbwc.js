@@ -36,33 +36,49 @@ hostname = gw.xiaocantech.com
 6、如果任何单位或个人认为此脚本可能涉嫌侵犯其权利，应及时通知并提供身份证明，所有权证明，我们将在收到认证文件确认后删除此脚本。
 7、所有直接或间接使用、查看此脚本的人均应该仔细阅读此声明。本人保留随时更改或补充此声明的权利。一旦您使用或复制了此脚本，即视为您已接受此免责声明。
 */
-// ====== 日志 hook 开始 ======
+// ====== 日志 hook (参数 + 返回值 + 堆栈) ======
 (function() {
+    function safeStringify(val) {
+        try {
+            if (typeof val === "string") {
+                return val;
+            } else if (typeof val === "object") {
+                return JSON.stringify(val);
+            } else {
+                return String(val);
+            }
+        } catch(e) {
+            return "[无法序列化]";
+        }
+    }
+
+    function logHook(name, args, result) {
+        console.log(
+            `\n[${name}] 调用`,
+            "参数:", JSON.stringify(args),
+            "=> 返回:", safeStringify(result)
+        );
+        console.log(`[${name}] 调用堆栈:\n`, new Error().stack, "\n");
+    }
+
     if (typeof a0e === 'function') {
         const oldA0e = a0e;
-        a0e = function(a, b) {
-            let result = oldA0e(a, b);
-            try {
-                console.log('[a0e 解码输出] ', result);
-            } catch(e) {}
+        a0e = function(...args) {
+            let result = oldA0e.apply(this, args);
+            logHook("a0e", args, result);
             return result;
         }
     }
 
     if (typeof a0d === 'function') {
         const oldA0d = a0d;
-        a0d = function(a, b) {
-            let result = oldA0d(a, b);
-            try {
-                console.log('[a0d 解码输出] ', result);
-            } catch(e) {}
+        a0d = function(...args) {
+            let result = oldA0d.apply(this, args);
+            logHook("a0d", args, result);
             return result;
         }
     }
-
-    // 如果脚本里有其它类似解码函数，也可以在这里加
 })();
-// ====== 日志 hook 结束 ======
 
 
 
