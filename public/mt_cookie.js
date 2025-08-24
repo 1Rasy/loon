@@ -71,7 +71,7 @@
 
     const success = $persistentStore.write(JSON.stringify(storedArr), storeKey);
     if (success) {
-      $notification.post("","晓晓优选", "✅"`${phone}`"获取成功");
+      $notification.post("", "✅ 美团 Cookie 抓取成功", `${phone}`获取成功);
       console.log(`[Loon] 已保存账号 ${phone} 的信息: ` + JSON.stringify(toStore));
     } else {
       console.log("[Loon] 保存本地失败");
