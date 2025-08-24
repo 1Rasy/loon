@@ -16,21 +16,24 @@
       return $done({});
     }
 
-    // 本地存储 key 根据 phone 动态生成
-    const storeKey = `mt_au_${phone}`;
+    // 本地存储 key
+    const storeKey = `mt_au`;
 
-    // 读取本地上次抓取信息
+    // 读取本地上次抓取信息（多账号数组）
+    let storedArr = [];
     const storedStr = $persistentStore.read(storeKey);
-    let lastTime = 0;
     if (storedStr) {
       try {
-        const stored = JSON.parse(storedStr);
-        lastTime = new Date(stored.time).getTime() || 0;
+        storedArr = JSON.parse(storedStr);
       } catch (e) {
-        console.log("[Loon] 本地存储解析错误，重置时间");
-        lastTime = 0;
+        console.log("[Loon] 本地存储解析错误，重置数组");
+        storedArr = [];
       }
     }
+
+    // 检查该手机号是否已存在，并获取上次抓取时间
+    let existingIndex = storedArr.findIndex(item => item.phone === phone);
+    let lastTime = existingIndex !== -1 ? new Date(storedArr[existingIndex].time).getTime() : 0;
 
     // 如果距离上次抓取 < 10 分钟，则跳过
     if (now - lastTime < 10 * 60 * 1000) {
@@ -53,12 +56,21 @@
     }
 
     const toStore = {
+      phone,
       time: new Date(now).toISOString(),
       cookie,
       mtgsig
     };
 
-    const success = $persistentStore.write(JSON.stringify(toStore), storeKey);
+    if (existingIndex !== -1) {
+      // 更新已有账号信息
+      storedArr[existingIndex] = toStore;
+    } else {
+      // 新增账号信息
+      storedArr.push(toStore);
+    }
+
+    const success = $persistentStore.write(JSON.stringify(storedArr), storeKey);
     if (success) {
       $notification.post("✅ 美团 Cookie 抓取成功", "", `${phone}`);
       console.log(`[Loon] 已保存账号 ${phone} 的信息: ` + JSON.stringify(toStore));
