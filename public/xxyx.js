@@ -7,7 +7,10 @@
 if ($request.url.includes("xxyx-client-api.xiaoxiaoyouxuan.com/my")) {
   console.log('晓晓优选 开始');
   const token = $request.headers['xx-token'];
-  let rsp_body = $response.body || "{}";
+  let rsp_body = "{}";
+  if (typeof $response !== 'undefined' && $response !== null) {
+    rsp_body = $response.body;
+  }
   let rsp_data = JSON.parse(rsp_body).data;
 
   if (token && rsp_data) {
