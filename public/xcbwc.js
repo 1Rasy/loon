@@ -36,29 +36,38 @@ hostname = gw.xiaocantech.com
 6、如果任何单位或个人认为此脚本可能涉嫌侵犯其权利，应及时通知并提供身份证明，所有权证明，我们将在收到认证文件确认后删除此脚本。
 7、所有直接或间接使用、查看此脚本的人均应该仔细阅读此声明。本人保留随时更改或补充此声明的权利。一旦您使用或复制了此脚本，即视为您已接受此免责声明。
 */
-// ====== 日志 hook (参数 + 返回值 + 堆栈) ======
+// ====== 日志 hook (更详细版本) ======
 (function() {
-    function safeStringify(val) {
+    function describe(val) {
+        let type = typeof val;
+        let repr;
         try {
-            if (typeof val === "string") {
-                return val;
-            } else if (typeof val === "object") {
-                return JSON.stringify(val);
+            if (type === "string") {
+                repr = val.length > 200 ? val.slice(0,200) + "...[len=" + val.length + "]" : val;
+            } else if (type === "object") {
+                repr = JSON.stringify(val);
+            } else if (type === "function") {
+                repr = "[Function]";
             } else {
-                return String(val);
+                repr = String(val);
             }
         } catch(e) {
-            return "[无法序列化]";
+            repr = "[无法序列化]";
         }
+        return `{type:${type}, value:${repr}}`;
     }
 
     function logHook(name, args, result) {
         console.log(
             `\n[${name}] 调用`,
-            "参数:", JSON.stringify(args),
-            "=> 返回:", safeStringify(result)
+            "参数:", args.map(describe).join(", "),
+            "=> 返回:", describe(result)
         );
-        console.log(`[${name}] 调用堆栈:\n`, new Error().stack, "\n");
+        try {
+            throw new Error("StackTrace");
+        } catch(e) {
+            console.log(`[${name}] 调用堆栈:\n`, e.stack, "\n");
+        }
     }
 
     if (typeof a0e === 'function') {
