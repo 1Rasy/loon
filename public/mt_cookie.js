@@ -16,34 +16,33 @@
       return $done({});
     }
 
-    // 本地存储 key
-    const storeKey = `mt_au`;
+    const storeKey = "mt_au";
 
-    // 读取本地上次抓取信息（多账号数组）
+    // 读取本地上次抓取信息
     let storedArr = [];
     const storedStr = $persistentStore.read(storeKey);
     if (storedStr) {
       try {
-        storedArr = JSON.parse(storedStr);
+        const parsed = JSON.parse(storedStr);
+        if (Array.isArray(parsed)) {
+          storedArr = parsed;
+        } else {
+          console.log("[Loon] 本地存储不是数组，初始化为空数组");
+        }
       } catch (e) {
-        console.log("[Loon] 本地存储解析错误，重置数组");
-        storedArr = [];
+        console.log("[Loon] 本地存储解析失败，初始化为空数组");
       }
     }
 
-    // 检查该手机号是否已存在，并获取上次抓取时间
-    let existingIndex = storedArr.findIndex(item => item.phone === phone);
-    let lastTime = existingIndex !== -1 ? new Date(storedArr[existingIndex].time).getTime() : 0;
-
-    // 如果距离上次抓取 < 10 分钟，则跳过
-    if (now - lastTime < 10 * 60 * 1000) {
+    // 检查当前手机号是否存在且更新时间是否 < 10 分钟
+    const index = storedArr.findIndex(item => item.phone === phone);
+    if (index !== -1 && now - (new Date(storedArr[index].time).getTime() || 0) < 10 * 60 * 1000) {
       return $done({});
     }
 
     const headers = $request.headers || {};
     const cookie = headers["cookie"] || "";
     const mtgsigRaw = headers["mtgsig"] || "";
-
     if (!cookie || !mtgsigRaw) return $done({});
 
     let mtgsig;
@@ -62,11 +61,11 @@
       mtgsig
     };
 
-    if (existingIndex !== -1) {
-      // 更新已有账号信息
-      storedArr[existingIndex] = toStore;
+    if (index !== -1) {
+      // 更新已有账号
+      storedArr[index] = toStore;
     } else {
-      // 新增账号信息
+      // 新增账号
       storedArr.push(toStore);
     }
 
@@ -77,6 +76,7 @@
     } else {
       console.log("[Loon] 保存本地失败");
     }
+
   } catch (e) {
     console.log("[Loon] 脚本错误: " + e.message);
   } finally {
