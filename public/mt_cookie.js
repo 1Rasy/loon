@@ -54,7 +54,7 @@
 
     const success = $persistentStore.write(JSON.stringify(toStore), "mt_au");
     if (success) {
-      $notification.post("✅ 美团 Cookie 抓取成功", "", "已保存完整 cookie 和 mtgsig（a2 本地生成）");
+      $notification.post("✅ 美团 Cookie 抓取成功");
       console.log("[Loon] 已保存美团认证信息: " + JSON.stringify(toStore));
     } else {
       console.log("[Loon] 保存本地失败");
