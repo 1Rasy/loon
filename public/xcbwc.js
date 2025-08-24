@@ -36,63 +36,34 @@ hostname = gw.xiaocantech.com
 6、如果任何单位或个人认为此脚本可能涉嫌侵犯其权利，应及时通知并提供身份证明，所有权证明，我们将在收到认证文件确认后删除此脚本。
 7、所有直接或间接使用、查看此脚本的人均应该仔细阅读此声明。本人保留随时更改或补充此声明的权利。一旦您使用或复制了此脚本，即视为您已接受此免责声明。
 */
-// === 调试开关 ===
-let debug = true;
-let decodedLogs = []; // 用来收集所有解码后的内容
-
-// 封装一个安全的打印函数
-function log(msg) {
-  if (debug) {
-    decodedLogs.push(msg);
-    console.log(msg);
-  }
-}
-
-// === 修改解码函数，插入日志 ===
-function a0e(a, b) {
-  var c = a0c();
-  return a0e = function (d, e) {
-    d = d - 0x121;
-    var f = c[d];
-
-    if (f && typeof f === "string" && f.length < 200) {
-      log("[a0e解码] " + f);
+// ====== 日志 hook 开始 ======
+(function() {
+    if (typeof a0e === 'function') {
+        const oldA0e = a0e;
+        a0e = function(a, b) {
+            let result = oldA0e(a, b);
+            try {
+                console.log('[a0e 解码输出] ', result);
+            } catch(e) {}
+            return result;
+        }
     }
 
-    return f;
-  }, a0e(a, b);
-}
-
-function a0d(a, b) {
-  var c = a0c();
-  return a0d = function (d, e) {
-    d = d - 0x121;
-    var f = c[d];
-
-    if (f && typeof f === "string" && f.length < 200) {
-      log("[a0d解码] " + f);
+    if (typeof a0d === 'function') {
+        const oldA0d = a0d;
+        a0d = function(a, b) {
+            let result = oldA0d(a, b);
+            try {
+                console.log('[a0d 解码输出] ', result);
+            } catch(e) {}
+            return result;
+        }
     }
 
-    return f;
-  }, a0d(a, b);
-}
+    // 如果脚本里有其它类似解码函数，也可以在这里加
+})();
+// ====== 日志 hook 结束 ======
 
-// === 在脚本运行的关键步骤加日志 ===
-// 例如：请求接口前
-function fetchSomething(url) {
-  log("开始请求接口: " + url);
-  // ...执行请求逻辑
-}
-
-// 例如：拿到响应后
-function handleResponse(resp) {
-  log("响应数据: " + JSON.stringify(resp));
-}
-
-// === 脚本结束时，统一输出所有收集到的日志 ===
-function finish() {
-  log("脚本执行完毕，总共解码字符串数量: " + decodedLogs.length);
-}
 
 
 const $ = new Env("小蚕霸王餐");
