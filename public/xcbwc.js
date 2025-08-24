@@ -20,8 +20,8 @@
 
 重写:打开软件，获取token后及时关闭，避免不必要的冲突
 
-[rewrite_local]
-^https:\/\/gw\.xiaocantech\.com\/rpc url script-response-body https://gist.githubusercontent.com/Sliverkiss/250a02315f0a2c99f42da3b3573375c8/raw
+[Script]
+http-response ^https:\/\/gw\.xiaocantech\.com\/rpc script-path=https://loon-nine.vercel.app/xcbwc.js, requires-body=true, timeout=10, tag=提取津贴
 
 [MITM]
 hostname = gw.xiaocantech.com
