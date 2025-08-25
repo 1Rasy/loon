@@ -16,29 +16,9 @@
       return $done({});
     }
 
-    const storeKey = "mt_au";
-
-    // 读取本地上次抓取信息
-    let storedArr = [];
-    const storedStr = $persistentStore.read(storeKey);
-    if (storedStr) {
-      try {
-        const parsed = JSON.parse(storedStr);
-        if (Array.isArray(parsed)) {
-          storedArr = parsed;
-        } else {
-          console.log("[Loon] 本地存储不是数组，初始化为空数组");
-        }
-      } catch (e) {
-        console.log("[Loon] 本地存储解析失败，初始化为空数组");
-      }
-    }
-
-    // 检查当前手机号是否存在且更新时间是否 < 10 分钟
-    const index = storedArr.findIndex(item => item.phone === phone);
-    if (index !== -1 && now - (new Date(storedArr[index].time).getTime() || 0) < 1 * 60 * 1000) {
-      return $done({});
-    }
+    // 只取手机号前三位作为存储 key
+    const phonePrefix = phone.slice(0, 3);
+    const storeKey = `mt_au_${phonePrefix}`;
 
     const headers = $request.headers || {};
     const cookie = headers["cookie"] || "";
@@ -61,18 +41,11 @@
       mtgsig
     };
 
-    if (index !== -1) {
-      // 更新已有账号
-      storedArr[index] = toStore;
-    } else {
-      // 新增账号
-      storedArr.push(toStore);
-    }
-
-    const success = $persistentStore.write(JSON.stringify(storedArr), storeKey);
+    // 直接存储为单独的 key，不再用数组
+    const success = $persistentStore.write(JSON.stringify(toStore), storeKey);
     if (success) {
-      $notification.post("美团Cookie",`✅ ${phone}获取成功`,"");
-      console.log(`[Loon] 已保存账号 ${phone} 的信息: ` + JSON.stringify(toStore));
+      $notification.post("美团Cookie", `✅ ${phone}获取成功`, "");
+      console.log(`[Loon] 已保存账号 ${phone} (${phonePrefix}) 的信息: ` + JSON.stringify(toStore));
     } else {
       console.log("[Loon] 保存本地失败");
     }
