@@ -3,7 +3,7 @@ let rsp_body = "{}";
 
 // ✅ 设置你要过滤的店铺名字，支持模糊匹配
 const filterNames = [
-    "爷爷不泡茶"
+    "烧烤"
 ];
 
 if (typeof $response !== 'undefined' && $response !== null) {
