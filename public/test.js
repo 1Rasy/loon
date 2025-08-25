@@ -105,7 +105,6 @@
       body: JSON.stringify(bodyObj)
     };
 
-       // 发送领券请求
     $httpClient.post(params, (err, resp, data) => {
       try {
         if (err) {
@@ -135,3 +134,9 @@
         $done({});
       }
     });
+
+  } catch (e) {
+    console.log("[Loon] 脚本执行异常:", e);
+    $done({});
+  }
+})();
