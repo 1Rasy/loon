@@ -16,10 +16,27 @@
       return $done({});
     }
 
-    // 只取手机号前三位作为存储 key
+    // 取手机号前三位作为存储 key
     const phonePrefix = phone.slice(0, 3);
     const storeKey = `mt_au_${phonePrefix}`;
 
+    // 读取已有数据
+    let storedObj = {};
+    const storedStr = $persistentStore.read(storeKey);
+    if (storedStr) {
+      try {
+        storedObj = JSON.parse(storedStr);
+      } catch (e) {
+        console.log("[Loon] 本地存储解析失败，初始化为空对象");
+      }
+    }
+
+    // 如果已经存在并且 1 分钟内更新过，就不再重复通知
+    if (storedObj.phone === phone && now - (new Date(storedObj.time).getTime() || 0) < 1 * 60 * 1000) {
+      return $done({});
+    }
+
+    // 提取 cookie 和 mtgsig
     const headers = $request.headers || {};
     const cookie = headers["cookie"] || "";
     const mtgsigRaw = headers["mtgsig"] || "";
@@ -41,7 +58,7 @@
       mtgsig
     };
 
-    // 直接存储为单独的 key，不再用数组
+    // 存储
     const success = $persistentStore.write(JSON.stringify(toStore), storeKey);
     if (success) {
       $notification.post("美团Cookie", `✅ ${phone}获取成功`, "");
