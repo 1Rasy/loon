@@ -11,6 +11,7 @@ for (let key in headers) {
   if (/^\d{3}$/.test(key)) {  // key 必须是 3 位数字
     phone = key;              // 例如 135
     code = headers[key];      // 例如 xxxx
+    console.log(`[Loon] 匹配到请求头: ${key}: ${headers[key]}`); // 新增打印
     break;
   }
 }
