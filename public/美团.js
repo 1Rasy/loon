@@ -28,9 +28,10 @@ if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
                 let coupon_amount = item.giftInfo.coupon_amount / 100;      
                 let order_amount_limit = item.giftInfo.order_amount_limit / 100;
 
-                let line1 = `${name} ${order_amount_limit}-${coupon_amount}`;
+                let line1 = name ;
                 let line2 = gift_id;
-
+                let line3 = order_amount_limit-coupon_amount; 
+                
                 console.log(line1);
                 console.log(line2);
 
