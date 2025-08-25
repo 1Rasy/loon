@@ -10,7 +10,7 @@
 #!晓晓测试 = switch,false,tag=晓晓测试
 
 cron "17 7 * * *" script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/xxyx/xxyx_signin.js, timeout=300, tag=晓晓优选每日任务, img-url=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/xxyx_01.jpeg
-http-response ^https:\/\/xxyx-client-api\.xiaoxiaoyouxuan\.com\/my script-path=https://loon-nine.vercel.app/xxyx.js, requires-body=true, timeout=60, tag=晓晓测试, enable={晓晓测试}
+http-request ^https:\/\/xxyx-client-api\.xiaoxiaoyouxuan\.com\/my script-path=https://loon-nine.vercel.app/xxyx.js, requires-body=true, timeout=60, tag=晓晓测试, enable={晓晓测试}
 http-response ^https:\/\/adapi\.waimai\.meituan\.com\/api\/ad\/landingPage script-path=https://loon-nine.vercel.app/loon.js, requires-body=true, timeout=60, tag=提取津贴, enable={津贴提取}
 
 [Script]
