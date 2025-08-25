@@ -23,6 +23,6 @@ http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz 
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/mt_cookie.js, requires-body=true, timeout=60, tag=美团cookie, enable={提取cookie}
 
 [MITM]
-hostname = adapi.waimai.meituan.com, offsiteact.meituan.com, gw.xiaocantech.coh,httpbin.org
+hostname = adapi.waimai.meituan.com, offsiteact.meituan.com, gw.xiaocantech.com,httpbin.org
 [rewrite]
 ^https:\/\/gw\.xiaocantech\.com\/rpc response-body-replace-regex "mt_pwd":\".+\" "mt_pwd":""
