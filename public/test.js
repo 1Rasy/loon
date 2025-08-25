@@ -105,7 +105,7 @@
       body: JSON.stringify(bodyObj)
     };
 
-    // 发送领券请求
+       // 发送领券请求
     $httpClient.post(params, (err, resp, data) => {
       try {
         if (err) {
@@ -114,15 +114,24 @@
         } else {
           console.log(`[Loon] ${storageKey} 领券响应状态: ${resp && resp.status}`);
           console.log(`[Loon] ${storageKey} 响应体: ${data}`);
-          $notification.post("领券结果", storageKey, `状态: ${resp && resp.status}`);
+
+          let msg = "";
+          try {
+            const obj = JSON.parse(data);
+            if (Array.isArray(obj.showMsgs) && obj.showMsgs.length) {
+              msg = obj.showMsgs.join(" / ");
+            } else if (Array.isArray(obj.msgs) && obj.msgs.length) {
+              msg = obj.msgs.join(" / ");
+            } else if (obj.msg) {
+              msg = obj.msg;
+            }
+          } catch (e) {
+            msg = "响应解析失败";
+          }
+
+          $notification.post("领券结果", storageKey, msg || `状态: ${resp && resp.status}`);
         }
       } finally {
         $done({});
       }
     });
-
-  } catch (e) {
-    console.log("[Loon] 脚本异常: " + e.message);
-    $done({});
-  }
-})();
