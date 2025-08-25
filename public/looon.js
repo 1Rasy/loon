@@ -14,7 +14,7 @@ http-respnse ^https:\/\/xxyx-client-api\.xiaoxiaoyouxuan\.com\/my script-path=ht
 http-response ^https:\/\/adapi\.waimai\.meituan\.com\/api\/ad\/landingPage script-path=https://loon-nine.vercel.app/loon.js, requires-body=true, timeout=60, tag=提取津贴, enable={津贴提取}
 
 [Script]
-http-request ^https:\/\/www\.rasy\.com script-path=https://loon-nine.vercel.app/test.js, requires-body=true, timeout=10, tag=联动, enable={联动}
+http-request ^https:\/\/httpbin\.org\/get script-path=https://loon-nine.vercel.app/test.js, requires-body=true, timeout=10, tag=联动, enable={联动}
 
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/美团.js, requires-body=true, timeout=60, tag=美团领券, enable={美团领券}
 
