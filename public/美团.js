@@ -30,7 +30,7 @@ if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
 
                 let line1 = name ;
                 let line2 = gift_id;
-                let line3 = '{order_amount_limit}-{coupon_amount}'; 
+                let line3 = 'order_amount_limit-coupon_amount'; 
                 
                 console.log(line1);
                 console.log(line2);
