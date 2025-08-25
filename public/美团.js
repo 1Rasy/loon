@@ -16,7 +16,6 @@ if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
     try {
         let dataObj = JSON.parse(rsp_body);
         let infos = dataObj.infos || [];
-        let notifyMsg = "";
 
         infos.forEach(item => {
             if (item.poiBaseInfo && item.giftInfo) {
@@ -36,15 +35,16 @@ if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
                 console.log(line1);
                 console.log(line2);
 
-                notifyMsg += `${line1}\n${line2}\n\n`;
+                // 组装通知内容
+                if (typeof $notification !== 'undefined' && $notification.post) {
+                    let attach = {
+                        "clipboard": `${line1}\n${line2}`, // 点击复制全部内容
+                    };
+                    $notification.post(line1, line2, '', attach);
+                }
             }
         });
 
-        if (notifyMsg.trim()) {
-            if (typeof $notification !== 'undefined' && $notification.post) {
-                $notification.post('美团优惠券抓取✅', '', notifyMsg.trim());
-            }
-        }
     } catch (e) {
         console.log('解析响应体失败', e);
     }
