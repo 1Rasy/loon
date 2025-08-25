@@ -35,7 +35,7 @@ if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
                 console.log(line1);
                 console.log(line2);
 
-                // ✅ 简化通知
+                // ✅ 简化通知哈哈哈
                 if (typeof $notification !== 'undefined' && $notification.post) {
                     $notification.post(line1, line3, line2, { clipboard: `${line1}\n${line2}` });
                 }
