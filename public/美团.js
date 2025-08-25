@@ -22,8 +22,7 @@ if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
                 let name = item.poiBaseInfo.name;
 
                 // 过滤：只有名字里包含白名单关键字才继续
-                let match = filterNames.some(keyword => name.includes(keyword));
-                if (!match) return;
+                if (!filterNames.some(keyword => name.includes(keyword))) return;
 
                 let gift_id = item.giftInfo.gift_id;
                 let coupon_amount = item.giftInfo.coupon_amount / 100;      
@@ -35,12 +34,9 @@ if (req_url.includes("offsiteact.meituan.com/act/ge/queryPoiByRecallBiz")) {
                 console.log(line1);
                 console.log(line2);
 
-                // 组装通知内容
+                // ✅ 简化通知
                 if (typeof $notification !== 'undefined' && $notification.post) {
-                    let attach = {
-                        "clipboard": `${line1}\n${line2}`, // 点击复制全部内容
-                    };
-                    $notification.post(line1, line2, '', attach);
+                    $notification.post(line1, line2, '', { clipboard: `${line1}\n${line2}` });
                 }
             }
         });
