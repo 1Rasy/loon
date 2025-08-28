@@ -6,7 +6,7 @@
 美团领券 = switch,false,tag=领券提取
 自动翻页 = switch,false,tag=自动翻页
 提取cookie = switch,false,tag=提取cookie
-联动 = switch,false,tag=指令请求带有手机和券
+联动 = switch,false,tag=指令请求券
 #!晓晓测试 = switch,false,tag=晓晓测试
 
 cron "17 7 * * *" script-path=https://raw.githubusercontent.com/fmz200/wool_scripts/main/Scripts/xxyx/xxyx_signin.js, timeout=300, tag=晓晓优选每日任务, img-url=https://raw.githubusercontent.com/fmz200/wool_scripts/main/icons/apps/xxyx_01.jpeg
@@ -16,7 +16,7 @@ cron "* * * * *" script-path=https://loon-nine.vercel.app/loadpage.js, timeout=3
 [Script]
 
 
-http-request ^https:\/\/httpbin\.org\/get script-path=https://loon-nine.vercel.app/test.js, requires-body=true, timeout=10, tag=联动, enable={联动}
+http-request ^https:\/\/httpbin\.org\/get script-path=https://loon-nine.vercel.app/test.js, requires-body=true, timeout=10, tag=指令输入领券, enable={联动}
 
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/美团.js, requires-body=true, timeout=60, tag=美团领券, enable={美团领券}
 
