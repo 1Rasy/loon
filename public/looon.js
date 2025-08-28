@@ -1,4 +1,4 @@
-#!name=领美团的
+#!name=哈哈哈
 #!icon=https://github.com/Toperlock/Quantumult/raw/main/icon/Doraemon/Doraemon-1096.png
 
 [Argument]
