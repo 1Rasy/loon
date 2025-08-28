@@ -14,6 +14,8 @@ http-respnse ^https:\/\/xxyx-client-api\.xiaoxiaoyouxuan\.com\/my script-path=ht
 
 
 [Script]
+cron "* * * * *" script-path=https://loon-nine.vercel.app/loadpage.js, timeout=300, tag=加载商家券
+
 http-request ^https:\/\/httpbin\.org\/get script-path=https://loon-nine.vercel.app/test.js, requires-body=true, timeout=10, tag=联动, enable={联动}
 
 http-response ^https:\/\/offsiteact\.meituan\.com\/act\/ge\/queryPoiByRecallBiz script-path=https://loon-nine.vercel.app/美团.js, requires-body=true, timeout=60, tag=美团领券, enable={美团领券}
