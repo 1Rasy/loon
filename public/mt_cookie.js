@@ -59,4 +59,25 @@
     // 构建存储对象
     const toStore = {
       phone,
-      tim
+      time: new Date(now).toISOString(),
+      cookie,
+      mtgsig,
+      rootPvId,
+      pageSrc3
+    };
+
+    // 存储
+    const success = $persistentStore.write(JSON.stringify(toStore), storeKey);
+    if (success) {
+      $notification.post("美团Cookie", `✅ ${phone}获取成功`, `rootPvId: ${rootPvId}\npageSrc3: ${pageSrc3}`);
+      console.log(`[Loon] 已保存账号 ${phone} 的信息: ` + JSON.stringify(toStore));
+    } else {
+      console.log("[Loon] 保存本地失败");
+    }
+
+  } catch (e) {
+    console.log("[Loon] 脚本错误: " + e.message);
+  } finally {
+    $done({});
+  }
+})();
