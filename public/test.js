@@ -20,7 +20,7 @@
 
     // 遍历 headers，找 mt_au_xxx:code
     for (const k in headers) {
-      if (/^mt_au_\d{3}$/i.test(k)) {
+      if (/^mt_au_\d{3}\*{4}\d{4}$/i.test(k)) {
         storageKey = k;
         codeRaw = String(headers[k] || "").trim();
         break;
