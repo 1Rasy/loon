@@ -1,13 +1,8 @@
-/**
- * Loon Rewrite 脚本：获取美团 Cookie 示例
- * 触发条件：请求 URL = https://httpbin.org/get
- */
 (() => {
   try {
-    const target = "httpbin.org/get";
+    const target = "offsiteact.meituan.com/act/ge/queryPoiByRecallBiz";
     const now = Date.now();
 
-    // 检查请求 URL 是否包含目标网址
     if (!$request.url.includes(target)) return $done({});
 
     // 解析请求体
