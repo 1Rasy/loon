@@ -47,11 +47,12 @@ const autoWithdraw = $persistentStore.read('xcbwc_auto_withdraw') ? JSON.parse($
 let accounts = [];
 try {
   const data = $persistentStore.read('xcbwc_data') || '[]';
+  $.log('Raw xcbwc_data:', data);
   accounts = JSON.parse(data);
-  $.log('Accounts:', JSON.stringify(accounts));
+  $.log('Parsed Accounts:', JSON.stringify(accounts));
 } catch (e) {
   $.log('错误: 无法解析xcbwc_data', e.message);
-  $notification.post('小蚕霸王餐', '错误', '请检查xcbwc_data环境变量');
+  $notification.post('小蚕霸王餐', '错误', '请检查xcbwc_data环境变量格式');
   $.done();
   return;
 }
@@ -63,6 +64,12 @@ if (!accounts.length) {
   return;
 }
 
+// 确保每个账号有userName
+accounts = accounts.map(account => ({
+  ...account,
+  userName: account.userName || '未知用户'
+}));
+
 // 日常任务函数
 async function doDailyTasks(account) {
   try {
@@ -72,28 +79,38 @@ async function doDailyTasks(account) {
 
     $.log(`[${userName}] 开始签到...`);
     const signRes = await $.post({ url: `${BASE_URL}/signIn`, headers, body: JSON.stringify({ userId }) });
-    $.log(`[${userName}] 签到结果: ${signRes.message || '未知'}`);
+    const signData = typeof signRes.body === 'string' ? JSON.parse(signRes.body || '{}') : signRes.body;
+    $.log(`[${userName}] 签到结果: ${signData.message || '未知'}`);
 
+    $.log(`[${userName}] 获取任务列表...`);
     const taskList = await $.get({ url: `${BASE_URL}/taskList`, headers });
-    for (const task of taskList.data || []) {
+    const taskData = typeof taskList.body === 'string' ? JSON.parse(taskList.body || '{}') : taskList.body;
+    for (const task of taskData.data || []) {
       if (task.status === 0) {
+        $.log(`[${userName}] 执行任务 ${task.name || '未知'}...`);
         await $.post({ url: `${BASE_URL}/doTask`, headers, body: JSON.stringify({ taskId: task.id }) });
         $.log(`[${userName}] 执行任务 ${task.name || '未知'}: 成功`);
       }
     }
 
+    $.log(`[${userName}] 开始抽奖...`);
     const lotteryRes = await $.post({ url: `${BASE_URL}/draw`, headers, body: JSON.stringify({ userId }) });
-    $.log(`[${userName}] 抽奖结果: ${lotteryRes.prize || '无奖品'}`);
+    const lotteryData = typeof lotteryRes.body === 'string' ? JSON.parse(lotteryRes.body || '{}') : lotteryRes.body;
+    $.log(`[${userName}] 抽奖结果: ${lotteryData.prize || '无奖品'}`);
 
+    $.log(`[${userName}] 获取挑战赛列表...`);
     const challengeList = await $.get({ url: `${BASE_URL}/challengeList`, headers });
-    for (const challenge of challengeList.data || []) {
+    const challengeData = typeof challengeList.body === 'string' ? JSON.parse(challengeList.body || '{}') : challengeList.body;
+    for (const challenge of challengeData.data || []) {
       if (challenge.status === 0) {
+        $.log(`[${userName}] 领取挑战赛 ${challenge.name || '未知'}...`);
         await $.post({ url: `${BASE_URL}/receiveChallenge`, headers, body: JSON.stringify({ challengeId: challenge.id }) });
         $.log(`[${userName}] 领取挑战赛 ${challenge.name || '未知'}: 成功`);
       }
     }
   } catch (e) {
     $.log(`[${account.userName}] 任务失败: ${e.message}`);
+    $notification.post('小蚕霸王餐', `任务失败: ${account.userName}`, e.message);
   }
 }
 
@@ -104,17 +121,22 @@ async function doWithdraw(account) {
     if (!token || !userId) throw new Error('缺少token或userId');
     const headers = { ...HEADERS, token };
 
+    $.log(`[${userName}] 检查余额...`);
     const balanceRes = await $.get({ url: `${BASE_URL}/balance`, headers });
-    const balance = balanceRes.data?.balance || 0;
+    const balanceData = typeof balanceRes.body === 'string' ? JSON.parse(balanceRes.body || '{}') : balanceRes.body;
+    const balance = balanceData.data?.balance || 0;
 
     if (balance > 1 && autoWithdraw) {
+      $.log(`[${userName}] 开始提现 ${balance} 元...`);
       const withdrawRes = await $.post({ url: `${BASE_URL}/withdraw`, headers, body: JSON.stringify({ amount: balance }) });
-      $.log(`[${userName}] 自动提现 ${balance} 元: ${withdrawRes.message || '未知'}`);
+      const withdrawData = typeof withdrawRes.body === 'string' ? JSON.parse(withdrawRes.body || '{}') : withdrawRes.body;
+      $.log(`[${userName}] 自动提现 ${balance} 元: ${withdrawData.message || '未知'}`);
     } else {
       $.log(`[${userName}] 余额 ${balance} 元，未达到提现阈值或开关关闭`);
     }
   } catch (e) {
     $.log(`[${account.userName}] 提现失败: ${e.message}`);
+    $notification.post('小蚕霸王餐', `提现失败: ${account.userName}`, e.message);
   }
 }
 
