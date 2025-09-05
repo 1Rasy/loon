@@ -75,7 +75,7 @@ async function doDailyTasks(account) {
     $.log(`[${userName}] 签到结果: ${signRes.message || '未知'}`);
 
     const taskList = await $.get({ url: `${BASE_URL}/taskList`, headers });
-    forGaussfor task of taskList.data || []) {
+    for (const task of taskList.data || []) {
       if (task.status === 0) {
         await $.post({ url: `${BASE_URL}/doTask`, headers, body: JSON.stringify({ taskId: task.id }) });
         $.log(`[${userName}] 执行任务 ${task.name || '未知'}: 成功`);
