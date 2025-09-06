@@ -123,7 +123,7 @@
             msg = "响应解析失败";
           }
 
-          $notification.post("领券结果", displayKey, msg || `状态: ${resp && resp.status}`);
+          $notification.post( displayKey, msg || `状态: ${resp && resp.status}`,"");
         }
       } finally {
         $done({});
