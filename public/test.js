@@ -1,13 +1,5 @@
 /**
  * http-request 脚本（触发示例：拦截 httpbin.org/get）
- * 功能：
- *  - 从请求头中获取形如 "mt_au_135:券码" 的条目
- *  - 直接读取对应的本地存储 key (mt_au_135)
- *  - 用该账号信息发起美团领券请求
- *
- * 使用：
- *  - 在快捷指令中向 https://httpbin.org/get 发请求，任意 header 中放 "mt_au_135:abcd1234"
- *  - 本地存储格式： key = "mt_au_135", value = { cookie:"...", mtgsig:{...}, time:"..." }
  */
 
 (() => {
@@ -32,12 +24,15 @@
       return $done({});
     }
 
-    console.log(`[Loon] 解析到账号Key="${storageKey}", 券码="${codeRaw}"`);
+    // 去掉前缀，显示更简洁
+    const displayKey = storageKey.replace(/^mt_au_/, "");
+
+    console.log(`[Loon] 解析到账号Key="${displayKey}", 券码="${codeRaw}"`);
 
     // 取出账号
     const raw = $persistentStore.read(storageKey);
     if (!raw) {
-      console.log(`[Loon] 未找到本地账号数据: ${storageKey}`);
+      console.log(`[Loon] 未找到本地账号数据: ${displayKey}`);
       return $done({});
     }
 
@@ -45,12 +40,12 @@
     try {
       account = JSON.parse(raw);
     } catch (e) {
-      console.log(`[Loon] 解析 ${storageKey} 数据失败: ${e.message}`);
+      console.log(`[Loon] 解析 ${displayKey} 数据失败: ${e.message}`);
       return $done({});
     }
 
     if (!account.cookie || !account.mtgsig) {
-      console.log(`[Loon] 账号数据缺少 cookie 或 mtgsig: ${storageKey}`);
+      console.log(`[Loon] 账号数据缺少 cookie 或 mtgsig: ${displayKey}`);
       return $done({});
     }
 
@@ -81,13 +76,13 @@
         scene: "CPS_SELF_SRC",
         pageSrc1: "CPS_SELF_OUT_SRC_H5_LINK",
         pageSrc2: "0c3bfd35279b4140b3bd8ecbc41301d6",
-        pageSrc3: "ef7b54947b474a3ebff3d911e4b36f80",
+        pageSrc3: "e15d0d4258004ba5b44c1c85e4db4084",
         activityId: "6",
         mediaPvId: "dafkdsajffjafdfs",
         mediaUserId: "10086",
         outActivityId: "6",
         hoaePageV: "8",
-        p: "993752907000602624"
+        p: "1016502508465025024"
       },
       appContainer: "UNKNOW",
       rootPvId: "32288adc-2c44-4827-9a80-79c532aae802",
@@ -108,11 +103,11 @@
     $httpClient.post(params, (err, resp, data) => {
       try {
         if (err) {
-          console.log(`[Loon] ${storageKey} 领券出错: ${err}`);
-          $notification.post("领券失败", storageKey, String(err));
+          console.log(`[Loon] ${displayKey} 领券出错: ${err}`);
+          $notification.post("领券失败", displayKey, String(err));
         } else {
-          console.log(`[Loon] ${storageKey} 领券响应状态: ${resp && resp.status}`);
-          console.log(`[Loon] ${storageKey} 响应体: ${data}`);
+          console.log(`[Loon] ${displayKey} 领券响应状态: ${resp && resp.status}`);
+          console.log(`[Loon] ${displayKey} 响应体: ${data}`);
 
           let msg = "";
           try {
@@ -128,7 +123,7 @@
             msg = "响应解析失败";
           }
 
-          $notification.post("领券结果", storageKey, msg || `状态: ${resp && resp.status}`);
+          $notification.post("领券结果", displayKey, msg || `状态: ${resp && resp.status}`);
         }
       } finally {
         $done({});
